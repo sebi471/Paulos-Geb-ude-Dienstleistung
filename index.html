@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Organisation App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+}
+header {
+  background: #1e293b;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+}
+nav {
+  display: flex;
+  background: #334155;
+}
+nav button {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+}
+nav button:hover {
+  background: #475569;
+}
+section {
+  display: none;
+  padding: 20px;
+}
+section.active {
+  display: block;
+}
+.card {
+  background: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+input, textarea, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+}
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+button:hover {
+  background: #1d4ed8;
+}
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+.small {
+  font-size: 12px;
+  color: gray;
+}
+</style>
+</head>
+
+<body>
+
+<header>📋 Organisations-App</header>
+
+<nav>
+  <button onclick="show('tasks')">Aufgaben</button>
+  <button onclick="show('calendar')">Termine</button>
+  <button onclick="show('notes')">Notizen</button>
+  <button onclick="show('projects')">Projekte</button>
+  <button onclick="show('team')">Team</button>
+</nav>
+
+<section id="tasks" class="active">
+  <div class="card">
+    <h3>Aufgabe hinzufügen</h3>
+    <input id="taskInput" placeholder="Neue Aufgabe">
+    <button onclick="addItem('tasks')">Speichern</button>
+    <div id="tasksList"></div>
+  </div>
+</section>
+
+<section id="calendar">
+  <div class="card">
+    <h3>Termin hinzufügen</h3>
+    <input id="calendarInput" placeholder="Termin">
+    <input type="date" id="calendarDate">
+    <button onclick="addItem('calendar')">Speichern</button>
+    <div id="calendarList"></div>
+  </div>
+</section>
+
+<section id="notes">
+  <div class="card">
+    <h3>Notiz</h3>
+    <textarea id="notesInput" placeholder="Notiz schreiben"></textarea>
+    <button onclick="addItem('notes')">Speichern</button>
+    <div id="notesList"></div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="card">
+    <h3>Projekt</h3>
+    <input id="projectsInput" placeholder="Projektname">
+    <button onclick="addItem('projects')">Speichern</button>
+    <div id="projectsList"></div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="card">
+    <h3>Teammitglied</h3>
+    <input id="teamInput" placeholder="Name / Rolle">
+    <button onclick="addItem('team')">Speichern</button>
+    <div id="teamList"></div>
+  </div>
+</section>
+
+<script>
+function show(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function load(type) {
+  return JSON.parse(localStorage.getItem(type)) || [];
+}
+
+function save(type, data) {
+  localStorage.setItem(type, JSON.stringify(data));
+}
+
+function render(type) {
+  const list = document.getElementById(type + "List");
+  list.innerHTML = "";
+  load(type).forEach((item, i) => {
+    const div = document.createElement("div");
+    div.className = "list-item";
+    div.innerHTML = `
+      <span>${item}</span>
+      <button onclick="removeItem('${type}', ${i})">✖</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function addItem(type) {
+  let value = document.getElementById(type + "Input").value;
+  if (type === "calendar") {
+    const date = document.getElementById("calendarDate").value;
+    value += " (" + date + ")";
+  }
+  if (!value) return;
+  const data = load(type);
+  data.push(value);
+  save(type, data);
+  document.getElementById(type + "Input").value = "";
+  render(type);
+}
+
+function removeItem(type, index) {
+  const data = load(type);
+  data.splice(index, 1);
+  save(type, data);
+  render(type);
+}
+
+["tasks","calendar","notes","projects","team"].forEach(render);
+</script>
+
+</body>
+</html>
