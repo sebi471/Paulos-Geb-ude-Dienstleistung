@@ -2,184 +2,228 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Organisation App</title>
+<title>Organisation Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root {
+  --main:#050a30;
+  --accent:#2563eb;
+  --bg:#f1f5f9;
+}
+*{box-sizing:border-box}
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  margin:0;
+  font-family: "Segoe UI", sans-serif;
+  background:var(--bg);
 }
+.hidden{display:none}
+
 header {
-  background: #1e293b;
-  color: white;
-  padding: 15px;
-  text-align: center;
-  font-size: 22px;
+  background:var(--main);
+  color:white;
+  padding:15px;
+  text-align:center;
+  font-size:22px;
 }
+
+button {
+  padding:10px;
+  border:none;
+  background:var(--accent);
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}
+button:hover{opacity:.9}
+
+input, textarea {
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.card {
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
 nav {
-  display: flex;
-  background: #334155;
+  background:var(--main);
+  display:flex;
 }
 nav button {
-  flex: 1;
-  padding: 15px;
-  border: none;
-  background: none;
-  color: white;
-  cursor: pointer;
+  flex:1;
+  background:none;
+  color:white;
 }
-nav button:hover {
-  background: #475569;
-}
-section {
-  display: none;
-  padding: 20px;
-}
-section.active {
-  display: block;
-}
-.card {
-  background: white;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-}
-input, textarea, select, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-}
-button {
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 6px;
-}
-button:hover {
-  background: #1d4ed8;
-}
+
+section {padding:20px}
+
 .list-item {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 5px;
-}
-.small {
-  font-size: 12px;
-  color: gray;
+  display:flex;
+  justify-content:space-between;
+  margin-top:6px;
 }
 </style>
 </head>
 
 <body>
 
-<header>📋 Organisations-App</header>
+<header>📊 Organisation Pro</header>
+
+<!-- LOGIN -->
+<section id="login">
+  <div class="card">
+    <h2>Account erstellen / Login</h2>
+    <input id="email" placeholder="E-Mail">
+    <input id="password" type="password" placeholder="Passwort">
+    <button onclick="login()">Login / Registrieren</button>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<div id="app" class="hidden">
 
 <nav>
+  <button onclick="show('dashboard')">Dashboard</button>
   <button onclick="show('tasks')">Aufgaben</button>
   <button onclick="show('calendar')">Termine</button>
   <button onclick="show('notes')">Notizen</button>
-  <button onclick="show('projects')">Projekte</button>
-  <button onclick="show('team')">Team</button>
+  <button onclick="show('research')">Recherche</button>
+  <button onclick="logout()">Logout</button>
 </nav>
 
-<section id="tasks" class="active">
+<section id="dashboard">
   <div class="card">
-    <h3>Aufgabe hinzufügen</h3>
-    <input id="taskInput" placeholder="Neue Aufgabe">
-    <button onclick="addItem('tasks')">Speichern</button>
+    <h2>👤 Benutzer Dashboard</h2>
+    <p>Willkommen in deinem Organisationssystem.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <div class="card">
+    <h3>Aufgaben</h3>
+    <input id="tasksInput" placeholder="Neue Aufgabe">
+    <button onclick="add('tasks')">Hinzufügen</button>
     <div id="tasksList"></div>
   </div>
 </section>
 
 <section id="calendar">
   <div class="card">
-    <h3>Termin hinzufügen</h3>
+    <h3>Termine</h3>
     <input id="calendarInput" placeholder="Termin">
     <input type="date" id="calendarDate">
-    <button onclick="addItem('calendar')">Speichern</button>
+    <button onclick="add('calendar')">Speichern</button>
     <div id="calendarList"></div>
   </div>
 </section>
 
 <section id="notes">
   <div class="card">
-    <h3>Notiz</h3>
-    <textarea id="notesInput" placeholder="Notiz schreiben"></textarea>
-    <button onclick="addItem('notes')">Speichern</button>
+    <h3>Notizen</h3>
+    <textarea id="notesInput"></textarea>
+    <button onclick="add('notes')">Speichern</button>
     <div id="notesList"></div>
   </div>
 </section>
 
-<section id="projects">
+<section id="research">
   <div class="card">
-    <h3>Projekt</h3>
-    <input id="projectsInput" placeholder="Projektname">
-    <button onclick="addItem('projects')">Speichern</button>
-    <div id="projectsList"></div>
+    <h3>🔍 Recherche-Zettel</h3>
+    <input id="researchInput" placeholder="Thema / Quelle / Link">
+    <textarea id="researchText" placeholder="Notizen / Infos"></textarea>
+    <button onclick="addResearch()">Speichern</button>
+    <div id="researchList"></div>
   </div>
 </section>
 
-<section id="team">
-  <div class="card">
-    <h3>Teammitglied</h3>
-    <input id="teamInput" placeholder="Name / Rolle">
-    <button onclick="addItem('team')">Speichern</button>
-    <div id="teamList"></div>
-  </div>
-</section>
+</div>
 
 <script>
-function show(id) {
-  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+let user = null;
+
+function login(){
+  const e = email.value;
+  const p = password.value;
+  if(!e || !p) return alert("Bitte ausfüllen");
+  user = e;
+  localStorage.setItem("user", e);
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
 }
 
-function load(type) {
-  return JSON.parse(localStorage.getItem(type)) || [];
+function logout(){
+  localStorage.removeItem("user");
+  location.reload();
 }
 
-function save(type, data) {
-  localStorage.setItem(type, JSON.stringify(data));
+function show(id){
+  document.querySelectorAll("section").forEach(s=>s.style.display="none");
+  document.getElementById(id).style.display="block";
 }
 
-function render(type) {
-  const list = document.getElementById(type + "List");
-  list.innerHTML = "";
-  load(type).forEach((item, i) => {
-    const div = document.createElement("div");
-    div.className = "list-item";
-    div.innerHTML = `
-      <span>${item}</span>
-      <button onclick="removeItem('${type}', ${i})">✖</button>
-    `;
-    list.appendChild(div);
+function key(type){ return user+"_"+type }
+
+function load(type){
+  return JSON.parse(localStorage.getItem(key(type)))||[];
+}
+
+function save(type,data){
+  localStorage.setItem(key(type),JSON.stringify(data));
+}
+
+function render(type){
+  const list=document.getElementById(type+"List");
+  if(!list) return;
+  list.innerHTML="";
+  load(type).forEach((i,idx)=>{
+    list.innerHTML+=`
+      <div class="list-item">
+        <span>${i}</span>
+        <button onclick="del('${type}',${idx})">✖</button>
+      </div>`;
   });
 }
 
-function addItem(type) {
-  let value = document.getElementById(type + "Input").value;
-  if (type === "calendar") {
-    const date = document.getElementById("calendarDate").value;
-    value += " (" + date + ")";
-  }
-  if (!value) return;
-  const data = load(type);
-  data.push(value);
-  save(type, data);
-  document.getElementById(type + "Input").value = "";
+function add(type){
+  const val=document.getElementById(type+"Input").value;
+  if(!val) return;
+  const d=load(type); d.push(val);
+  save(type,d);
   render(type);
+  document.getElementById(type+"Input").value="";
 }
 
-function removeItem(type, index) {
-  const data = load(type);
-  data.splice(index, 1);
-  save(type, data);
-  render(type);
+function del(type,i){
+  const d=load(type); d.splice(i,1);
+  save(type,d); render(type);
 }
 
-["tasks","calendar","notes","projects","team"].forEach(render);
+function addResearch(){
+  const t=researchInput.value;
+  const n=researchText.value;
+  if(!t) return;
+  const d=load("research");
+  d.push(`<b>${t}</b><br>${n}`);
+  save("research",d);
+  render("research");
+  researchInput.value="";
+  researchText.value="";
+}
+
+if(localStorage.getItem("user")){
+  user=localStorage.getItem("user");
+  login();
+}
+
+["tasks","calendar","notes","research"].forEach(render);
+show("dashboard");
 </script>
 
 </body>
